@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Layers Control Tutorial - Leaflet</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet-src.js"></script>
+  	<script src="http://calvinmetcalf.github.io/leaflet-ajax/dist/leaflet.ajax.js"></script>
+	<style>
+		#map {
+			width: 600px;
+			height: 400px;
+		}
+	</style>
+
+	<style>body { padding: 0; margin: 0; } html, body, #map { height: 100vh; width: 100vw; }</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+//CREO GRUPOS, LLAMO JSON Y LOS AGRUPO
+	//Equipamiento
+	var policiasybomberos = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/policiasybomberos.json",{dataType:"json"}).addTo(policiasybomberos);
+	var centrosdesalud = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/centrosdesalud.json",{dataType:"json"}).addTo(centrosdesalud);
+	var escuelaspublicas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/escuelaspublicas.json",{dataType:"json"}).addTo(escuelaspublicas);
+	var escuelasprivadas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/escuelasprivadas.json",{dataType:"json"}).addTo(escuelasprivadas);
+	var dependenciamunicipal = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/dependenciamunicipal.json",{dataType:"json"}).addTo(dependenciamunicipal);
+	//Infraestructura
+	var espaciosverdes = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/espaciosverdes.json",{dataType:"json"}).addTo(espaciosverdes);
+	var ferrocarriles = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/ferrocarriles.json",{dataType:"json"}).addTo(ferrocarriles);
+	var calles = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/calles.json",{dataType:"json"}).addTo(calles);
+	var hidrografia = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/hidrografia.json",{dataType:"json"}).addTo(hidrografia);
+	var estacionesdeferrocarriles = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/estacionesdeferrocarriles.json",{dataType:"json"}).addTo(estacionesdeferrocarriles);
+	//Divisiones administrativas
+	var barrios = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/barrios.json",{dataType:"json"}).addTo(barrios);
+	var localidades = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/localidades.json",{dataType:"json"}).addTo(localidades);
+	//Catastral
+	var catastro = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/catastro.json",{dataType:"json"}).addTo(catastro);
+	var manzanas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/manzanas.json",{dataType:"json"}).addTo(manzanas);
+	var numerodemanzanas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/numerodemanzanas.json",{dataType:"json"}).addTo(numerodemanzanas);
+	var parcelas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/parcelas.json",{dataType:"json"}).addTo(parcelas);
+	var numerodeparcelas = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/numerodeparcelas.json",{dataType:"json"}).addTo(numerodeparcelas);
+	//Zonificación
+	var parcelaria = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/parcelaria.json",{dataType:"json"}).addTo(parcelaria);
+	var restricciones = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/restricciones.json",{dataType:"json"}).addTo(restricciones);
+	var completamientodetrama = new L.LayerGroup();
+	L.geoJson.ajax("http://variative.com/catastrodigital/completamientodetrama.json",{dataType:"json"}).addTo(completamientodetrama);
+	//FIN
+
+	var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw';
+
+	var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
+		streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
+	var map = L.map('map', {
+		center: [-28,-63],
+		zoom: 7,
+		layers: [grayscale]
+	});
+
+	var baseLayers = {
+		"Grayscale": grayscale,
+		"Streets": streets
+	};
+
+	var overlays = {
+		"Policias y Bomberos": policiasybomberos,
+		"Centros de salud": centrosdesalud,
+		"Escuelas públicas": escuelaspublicas,
+		"Escuelas privadas": escuelasprivadas,
+		"Dependecia municipal": dependenciamunicipal,
+		"Espacios verdes": espaciosverdes,
+		"Ferrocarriles": ferrocarriles,
+		"Calles": calles,
+		"Hidrografía": hidrografia,
+		"Estaciones de ferrocarriles": estacionesdeferrocarriles,
+		"Barrios": barrios,
+		"Localidades": localidades,
+		"Catastro": catastro,
+		"Manzanas": manzanas,
+		"Número de manzanas": numerodemanzanas,
+		"Parcelas": parcelas,
+		"Número de parcelas": numerodeparcelas,
+		"Parcelaria": parcelaria,
+		"Restricciones": restricciones,
+		"Completamiento de trama": completamientodetrama
+	};
+
+	L.control.layers(baseLayers, overlays).addTo(map);
+</script>
+
+
+
+</body>
+</html>
